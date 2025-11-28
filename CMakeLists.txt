@@ -10,4 +10,6 @@ add_executable(Ignis main.cpp
         utils/utils.h
         frontend/parser/parser.h
         frontend/ast/node.h
-        frontend/parser/parser.cpp)
+        frontend/parser/parser.cpp
+        frontend/ast/arena.h
+        frontend/ast/arena.h)

@@ -4,6 +4,10 @@
 
 #ifndef IGNIS_NODE_H
 #define IGNIS_NODE_H
+#include <cstdint>
+#include <string>
+#include <string_view>
+#include <vector>
 
 enum NodeType {
     TFun,
@@ -12,10 +16,26 @@ enum NodeType {
     TParam,
 };
 
-#include <string>
+using NodeId = uint32_t;
+
+struct IgnType {
+    bool isPtr;
+    bool isStruct;
+    bool isArray;
+    bool isRef;
+    std::string base;
+};
+
+struct Param {
+    IgnType type;
+    std::string name;
+};
+
 struct Node {
     NodeType nodeType;
     std::string_view funcName;
-    std::vector<Node*> children;
+    std::vector<Param> paramList;
+    // Children are stored as indices into a NodeArena
+    std::vector<NodeId> body;
 };
 #endif //IGNIS_NODE_H
