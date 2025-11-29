@@ -3,16 +3,17 @@
 #include "../token/token.h"
 #include <vector>
 #include <string>
-class Lexer {
+class Lexer
+{
 public:
     unsigned long pos;
     std::string current_file;
     Lexer() {}
     std::vector<Token> Tokenize(std::string_view content);
 
-    char Peek();
+    char Peek(int offset = 0);
     char Consume();
     void Advance();
 };
 
-#endif //IGNIS_LEXER_H
+#endif // IGNIS_LEXER_H

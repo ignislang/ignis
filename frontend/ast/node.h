@@ -9,7 +9,8 @@
 #include <string_view>
 #include <vector>
 
-enum NodeType {
+enum NodeType
+{
     TFun,
     TLet,
     TRet,
@@ -18,7 +19,8 @@ enum NodeType {
 
 using NodeId = uint32_t;
 
-struct IgnType {
+struct IgnType
+{
     bool isPtr;
     bool isStruct;
     bool isArray;
@@ -26,17 +28,20 @@ struct IgnType {
     std::string base;
 };
 
-struct Param {
+struct Param
+{
     IgnType type;
     std::string name;
 };
 
-struct Node {
+struct Node
+{
     NodeType nodeType;
     std::string_view funcName;
     std::vector<Param> paramList;
+    IgnType returnType;
     // Children are stored as indices into a NodeArena
     std::vector<NodeId> body;
     int intValue;
 };
-#endif //IGNIS_NODE_H
+#endif // IGNIS_NODE_H
