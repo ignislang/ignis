@@ -139,7 +139,6 @@ void Parser::ParseBody(NodeId funcId)
         {
             Node returnNode = ParseReturn();
             NodeId childId = arena.create(returnNode);
-            // always fetch the function node from the arena to avoid stale references
             arena.get(funcId).body.push_back(childId);
         }
         else
@@ -165,7 +164,20 @@ Node Parser::ParseReturn()
     {
         AddError("Expected return value expression", Peek());
     }
-    returnNode.intValue = returnValue.intValue;
+    // returnNode.intValue = returnValue.intValue;
+
+    switch (returnValue.exprType.base)
+    {
+    case PrimType::PTI32:
+    case PrimType::PTF32:
+        returnNode.intValue = returnValue.intValue;
+        break;
+    case PrimType::PTString:
+        returnNode.stringValue = returnValue.stringValue;
+        break;
+    default:
+        break;
+    }
 
     returnNode.exprType = returnValue.exprType;
 
@@ -176,17 +188,40 @@ Node Parser::ParseReturn()
 
 Node Parser::ParseExpr()
 {
-    // For now, only support integer literals
-    Token tok = Consume(TokenType::ConstInt, "Expected integer literal in expression");
-
     Node exprNode;
     exprNode.nodeType = NodeType::TExpr;
     exprNode.exprType.isPtr = false;
     exprNode.exprType.isStruct = false;
     exprNode.exprType.isArray = false;
     exprNode.exprType.isRef = false;
-    exprNode.exprType.base = PrimType::PTI32;
-    exprNode.intValue = std::stoi(std::string(tok.value));
+
+    Token current = Peek();
+
+    switch (current.type)
+    {
+    case TokenType::ConstInt:
+    {
+        Token tok = Consume(TokenType::ConstInt, "Expected integer literal in expression");
+        exprNode.exprType.base = PrimType::PTI32;
+        exprNode.exprKind = ExprType::ExprInt;
+        exprNode.intValue = std::stoi(std::string(tok.value));
+        break;
+    }
+
+    case TokenType::ConstString:
+    {
+        Token tok = Consume(TokenType::ConstString, "Expected string literal in expression");
+        exprNode.exprType.base = PrimType::PTString;
+        exprNode.exprKind = ExprType::ExprString;
+        exprNode.stringValue = std::string(tok.value);
+        break;
+    }
+
+    default:
+        AddError("Unsupported expression starting with token: " + std::string(current.value), current);
+        Advance();
+        break;
+    }
 
     return exprNode;
 }

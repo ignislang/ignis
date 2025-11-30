@@ -28,6 +28,15 @@ enum PrimType
     PTChar,
     PTVoid,
     PTUserType,
+    PTString
+};
+
+enum ExprType
+{
+    ExprInt,
+    ExprString,
+    ExprFloat,
+    ExprFuncCall,
 };
 
 struct IgnType
@@ -55,5 +64,8 @@ struct Node
     // Children are stored as indices into a NodeArena
     std::vector<NodeId> body;
     int intValue;
+    std::string stringValue;
+    ExprType exprKind;
+    std::vector<NodeId> exprArgs;
 };
 #endif // IGNIS_NODE_H

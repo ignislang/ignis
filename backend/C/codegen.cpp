@@ -129,7 +129,23 @@ namespace ignis
                 }
                 else
                 {
-                    code << retNode.intValue;
+                    // Emit the return value based on its type
+                    if (retNode.exprType.base == PTString)
+                    {
+                        code << "\"" << retNode.stringValue << "\"";
+                    }
+                    else if (retNode.exprType.base == PTI32 || retNode.exprType.base == PTF32)
+                    {
+                        code << retNode.intValue;
+                    }
+                    else if (retNode.exprType.base == PTBool)
+                    {
+                        code << (retNode.intValue ? "true" : "false");
+                    }
+                    else
+                    {
+                        code << retNode.intValue;
+                    }
                 }
 
                 code << ";\n";
@@ -140,6 +156,10 @@ namespace ignis
                 if (exprNode.exprType.base == PTI32 || exprNode.exprType.base == PTF32)
                 {
                     code << exprNode.intValue;
+                }
+                else if (exprNode.exprType.base == PTString)
+                {
+                    code << "\"" << exprNode.stringValue << "\"";
                 }
                 else if (exprNode.exprType.base == PTBool)
                 {
@@ -179,6 +199,8 @@ namespace ignis
                     return "char";
                 case PTVoid:
                     return "void";
+                case PTString:
+                    return "char*";
                 case PTUserType:
                     return "struct";
                 default:

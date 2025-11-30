@@ -76,6 +76,10 @@ inline PrimType stringToPrimType(const std::string &typeStr)
     {
         return PrimType::PTChar;
     }
+    else if (typeStr == "string")
+    {
+        return PrimType::PTString;
+    }
     else if (typeStr == "void")
     {
         return PrimType::PTVoid;
